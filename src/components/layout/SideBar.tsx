@@ -1,6 +1,6 @@
 import { useWallet } from '@/lib/hooks';
 import { WalletRoute } from '@/lib/Interfaces';
-import { AppstoreOutlined,DollarOutlined, FileDoneOutlined } from '@ant-design/icons';
+import { AppstoreOutlined,DollarOutlined,PieChartOutlined,ProductOutlined, RetweetOutlined, WalletOutlined } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -35,8 +35,14 @@ const WalletSideBar = () => {
                 return '1'
             case '/wallet/transactions':
                 return '2'
-            case '/wallet/accounts':
+            case '/wallet/categories':
                 return '3'
+            case '/wallet/subcategories':
+                return '4'
+            case '/wallet/accounts':
+                return '5'
+            case '/wallet/budgets':
+                return '6'
             default:
                 return '1'
 
@@ -64,13 +70,28 @@ const WalletMenu: WalletRoute[] = [
     },
     {
         key: '2',
-        icon: <FileDoneOutlined />,
+        icon: <RetweetOutlined />,
         label: <Link href="/wallet/transactions" className="text-white">Transactions</Link>
     },
     {
         key: '3',
-        icon: <DollarOutlined />,
+        icon: <ProductOutlined />,
+        label: <Link href="/wallet/categories" className="text-white">Categories</Link>
+    },
+    {
+        key: '4',
+        icon: <PieChartOutlined />,
+        label: <Link href="/wallet/subcategories" className="text-white">Sub categories</Link>
+    },
+    {
+        key: '5',
+        icon: <WalletOutlined />,
         label: <Link href="/wallet/accounts" className="text-white">My Wallet</Link>
+    },
+    {
+        key: '6',
+        icon: <DollarOutlined />,
+        label: <Link href="/wallet/budgets" className="text-white">Budgets</Link>
     },
 
 ]
