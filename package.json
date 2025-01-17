@@ -1,6 +1,7 @@
 {
   "name": "wallet-task-force-pro",
   "version": "0.1.0",
+  "description": "Wallet web application",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -8,6 +9,16 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jeanndo/task-force-pro-2.0-fe.git"
+  },
+  "author": "JEAN DE DIEU UKWITEGETSE",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jeanndo/task-force-pro-2.0-fe/issues"
+  },
+  "homepage": "https://github.com/Jeanndo/task-force-pro-2.0-fe#readme",
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
