@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import DataTable from '../table/DataTable'
 import { Space, Tag } from 'antd';
