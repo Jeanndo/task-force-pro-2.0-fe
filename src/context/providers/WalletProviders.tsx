@@ -1,12 +1,15 @@
 import { FC } from 'react'
 import { Children } from '@/lib/Interfaces'
 import WalletProvider from './walletProvider'
+import ThemeProvider from './ThemeProvider'
 
 const WalletProviders: FC<Children> = ({ children }) => {
     return (
-        <WalletProvider>
-            {children}
-        </WalletProvider>
+        <ThemeProvider>
+            <WalletProvider>
+                {children}
+            </WalletProvider>
+        </ThemeProvider>
     )
 }
 
