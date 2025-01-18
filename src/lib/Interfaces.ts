@@ -9,3 +9,11 @@ export interface WalletRoute {
     icon: ReactNode;
     label: ReactNode;
 }
+
+export interface BreadCrumbs {
+    title: string;
+    href?: string;
+}
+export interface BreadCrumbsData {
+    data: BreadCrumbs[]
+}

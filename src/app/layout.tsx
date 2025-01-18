@@ -34,6 +34,21 @@ export default function RootLayout({
                 fontFamily: montserrat.style.fontFamily,
                 borderRadius: 0
               },
+              components: {
+                Breadcrumb: {
+                  lastItemColor: "#010813",
+                  linkColor: "#3b82f6"
+                },
+                Slider: {
+                  handleActiveColor:"#F00",
+                  trackBg:"#F00",
+                  trackHoverBg:"#F00",
+                  railBg:"#1677ff",
+                  railHoverBg:"#1677ff",
+                  dotBorderColor:"#F00",
+                  dotActiveBorderColor:"#F00",
+                },
+              },
             }}
           >
             {children}
