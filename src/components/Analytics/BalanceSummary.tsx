@@ -72,11 +72,11 @@ const dataFormatter = (number: number) =>
 
 export const BalanceSummaryChart = () => (
     <Card
-        className="!w-full p-2"
-    // decoration="top"
-    // decorationColor="indigo"
+        className="!bg-white p-2 "
     >
         <AreaChart
+            showAnimation
+            animationDuration={1500}
             className="h-72"
             data={chartdata}
             index="date"
@@ -84,6 +84,7 @@ export const BalanceSummaryChart = () => (
             colors={['blue', 'red']}
             valueFormatter={dataFormatter}
             yAxisWidth={60}
+            showGridLines={false}
         />
     </Card>
 

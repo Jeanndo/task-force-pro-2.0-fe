@@ -22,7 +22,7 @@ const AnalyticsBudgetSlider: FC = () => {
                 value={budget}
                 tooltip={{ formatter: (value) => `${value} FRW` }}
             />
-            <div className='dark:text-white'>{budget} FRW</div>
+            <div>{budget} FRW</div>
         </>
     );
 }

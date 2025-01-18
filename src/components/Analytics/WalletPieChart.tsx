@@ -15,7 +15,7 @@ const dataFormatter = (number: number) =>
     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
 export const PieChartForIncomeAndExpense = () => (
-    <Card className="p-2">
+    <Card className="p-2 !bg-white">
         <div className="flex flex-col gap-y-4 justify-center items-center">
             <DonutChart
                 data={datahero}
@@ -23,12 +23,14 @@ export const PieChartForIncomeAndExpense = () => (
                 valueFormatter={dataFormatter}
                 colors={["red","blue"]}
                 className="w-[250px] h-[250px]"
+                showAnimation={true}
+                animationDuration={1500}
                 
             />
             <Legend
                 categories={["Expenses","Income"]}
                 colors={["red","blue"]}
-                className='uppercase dark:text-white'
+                className='uppercase'
             />
         </div>
     </Card>

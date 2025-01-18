@@ -110,7 +110,7 @@ const CurrentTransactions: FC = () => {
     };
 
     return (
-        <Card className="p-2">
+        <Card className="p-2 !bg-white border-none">
             <DataTable<DataType>
                 columns={columns}
                 data={data}

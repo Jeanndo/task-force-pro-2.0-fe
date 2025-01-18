@@ -28,18 +28,9 @@ const WalletDashboard: FC = () => {
                 <Col className="gutter-row" xs={24} sm={12}>
                     <BudgetCard
                         title={"Current Budegt"}
-                        // icon={<DollarCircleOutlined />}
                         loading={loading}
                     />
                 </Col>
-                {/* <Col className="gutter-row" xs={24} sm={12} >
-                    <AnalyticsCard
-                        title={"Total Expenses"}
-                        icon={<DollarCircleOutlined />}
-                        metrics={formatMoney({ amount: 5000, currency: "RWF", locale: "en-US" })}
-                        loading={loading}
-                    />
-                </Col> */}
                 
             </Row>
             <div className="w-full mt-5">
