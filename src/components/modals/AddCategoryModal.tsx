@@ -3,7 +3,10 @@ import React, { FC, useState } from 'react';
 import { Button, Modal } from 'antd';
 import AddCateogryForm from '../forms/AddCategoryForm';
 
-const AddCategoryModal: FC = () => {
+type ModalProps = {
+    setCategoryAdded: React.Dispatch<React.SetStateAction<boolean>>
+}
+const AddCategoryModal: FC<ModalProps> = ({ setCategoryAdded }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -24,7 +27,10 @@ const AddCategoryModal: FC = () => {
                 ADD CATEGORY
             </Button>
             <Modal footer={null} title="Category Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <AddCateogryForm/>
+                <AddCateogryForm
+                    setCategoryAdded={setCategoryAdded}
+                    setIsModalOpen={setIsModalOpen}
+                />
             </Modal>
         </>
     );
