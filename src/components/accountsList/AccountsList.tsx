@@ -36,8 +36,8 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
                 //@ts-ignore
                 if (response.payload.status === 200) {
                     //@ts-ignore
-                    const availabbleAccounts = response.payload.data.rows
-                    setAccounts(availabbleAccounts)
+                    const availableAccounts = response.payload.data.rows
+                    setAccounts(availableAccounts)
                     setLoading(false)
 
                     setPagination({
