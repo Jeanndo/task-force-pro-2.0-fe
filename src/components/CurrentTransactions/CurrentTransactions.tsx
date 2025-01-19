@@ -1,119 +1,151 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
-import React, { FC, useState } from 'react'
-import { Space, Tag, type TablePaginationConfig, type TableProps } from 'antd';
+import React, { FC, useEffect, useState } from 'react'
+import { Button, Tag, type TablePaginationConfig, type TableProps } from 'antd';
 import DataTable from '@/components/table/DataTable';
 import { Card } from '@tremor/react';
-interface DataType {
-    id: number;
-    type: string;
-    amount: number;
-    account: string;
-    category: string;
-    subcategory: string;
-    description: string;
-    createdAt: string;
-}
+import { useAppDispatch, useMessage } from '@/lib/hooks';
+import { Transaction } from '@/lib/Interfaces';
+import moment from 'moment';
+import { getTransactionReport, getTransactions } from '@/redux/features/transactionSlice';
+import { FileExcelOutlined } from '@ant-design/icons';
 
-const columns: TableProps<DataType>['columns'] = [
-    {
-        title: 'Amount',
-        dataIndex: 'amount',
-        key: 'amount',
-        render: (value) => <span>{value} FRW</span>,
-    },
-    {
-        title: 'Type',
-        dataIndex: 'type',
-        key: 'type',
-        render: (value) => <div>{value === "Expense" ? <Tag color="red">{value}</Tag> : <Tag color="green">{value}</Tag>}</div>
-    },
-    {
-        title: 'Category',
-        dataIndex: 'category',
-        key: 'category',
-    },
-    {
-        title: 'Sub Category',
-        dataIndex: 'subcategory',
-        key: 'subcategory',
-    },
-    {
-        title: 'Account',
-        dataIndex: 'account',
-        key: 'account',
-    },
-    {
-        title: 'Created At',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        render: (value) => <span>{value}</span>,
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: () => (
-            <Space size="middle">
-                Delete
-            </Space>
-        ),
-    },
-];
-
-const data: DataType[] = [
-    {
-        id: 1,
-        type: 'Expense',
-        amount: 1000,
-        account: "CASH",
-        category: "Food",
-        subcategory: "N/A",
-        description: "This is my description",
-        createdAt: '2022-01-01',
-    },
-    {
-        id: 2,
-        type: 'Expense',
-        amount: 1000,
-        account: "CASH",
-        category: "Food",
-        subcategory: "N/A",
-        description: "This is my description",
-        createdAt: '2022-01-01',
-    },
-    {
-        id: 3,
-        type: 'Income',
-        amount: 1000,
-        account: "CASH",
-        category: "Food",
-        subcategory: "N/A",
-        description: "This is my description",
-        createdAt: '2022-01-01',
-    },
-];
-
-const expandedRowRender = (record: DataType) => (
+const expandedRowRender = (record: Transaction) => (
     <div className="bg-gray-200 flex justify-start text-sm p-2">
         <div><p className="text-center">{record.description}</p></div>
     </div>
 );
 
 const CurrentTransactions: FC = () => {
+    const dispatch = useAppDispatch()
+    const messenger = useMessage()
 
     const [loading, setLoading] = useState(false);
     const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0, });
+    const [transactions, setTransactions] = useState<Transaction[]>([])
+
+
+    useEffect(() => {
+        dispatch(getTransactions({
+            page: pagination.current,
+            limit: pagination.pageSize
+        })).then((response) => {
+            if (response) {
+                //@ts-ignore
+                if (response.payload.status === 200) {
+                    //@ts-ignore
+                    const availableTransactions = response.payload.data.rows
+                    setTransactions(availableTransactions)
+                    setLoading(false)
+
+                    setPagination({
+                        ...pagination,
+                        //@ts-ignore
+                        current: response.payload.data.page,
+                        //@ts-ignore
+                        total: response.payload.data.count,
+                        pageSize: pagination.pageSize,
+                    })
+                } else {
+                    setTransactions([])
+                }
+            }
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleTableChange = (pagination: TablePaginationConfig) => {
-        setLoading(true);
-        console.log('pagination', pagination)
-        setPagination({ ...pagination })
+        setLoading(true)
+        dispatch(getTransactions({
+            page: pagination.current,
+            limit: pagination.pageSize
+        })).then((response) => {
+
+            if (response) {
+                //@ts-ignore
+                if (response.payload?.status === 200) {
+                    //@ts-ignore
+                    const availableTransactions = response.payload.data.rows
+                    setTransactions(availableTransactions)
+                    setLoading(false)
+
+                    setPagination({
+                        ...pagination,
+                        //@ts-ignore
+                        current: response.payload.data.page,
+                        //@ts-ignore
+                        total: response.payload.data.count,
+                        pageSize: pagination.pageSize,
+                    })
+                } else {
+                    //@ts-ignore
+                    messenger.warning(response.payload.message)
+                    setLoading(false)
+                    setTransactions([])
+                }
+
+            }
+        })
     };
+
+    const getReport = () => {
+        dispatch(getTransactionReport()).then((response) => {
+            if (response) {
+                //@ts-ignore
+                if (response.payload.type) {
+                    messenger.success("Check your downloaded report in your downloads folder")
+                } else {
+                    messenger.warning("Error downloading report")
+                }
+            }
+        })
+    }
+
+    const columns: TableProps<Transaction>['columns'] = [
+        {
+            title: 'Amount',
+            dataIndex: 'amount',
+            key: 'amount',
+            render: (value) => <span>{value} FRW</span>,
+        },
+        {
+            title: 'Type',
+            dataIndex: 'type',
+            key: 'type',
+            render: (value) => <div>{value === "Expense" ? <Tag color="red">{value}</Tag> : <Tag color="green">{value}</Tag>}</div>
+        },
+        {
+            title: 'Category',
+            dataIndex: 'category',
+            key: 'category',
+            render: (_, record) => <div>{record.category.name}</div>
+        },
+        {
+            title: 'Sub Category',
+            dataIndex: 'subcategory',
+            key: 'subcategory',
+            render: (_, record) => <div>{record?.subcategory ? record?.subcategory?.name : 'N/A'}</div>
+        },
+        {
+            title: 'Account',
+            dataIndex: 'account',
+            key: 'account',
+            render: (_, record) => <div>{record.account.name}</div>
+        },
+        {
+            title: 'Created At',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (value) => <span>{moment(value).format('ll')}</span>,
+        }
+    ];
 
     return (
         <Card className="p-2 !bg-white border-none">
-            <DataTable<DataType>
+            <Button type="primary" className="!bg-green-500" icon={<FileExcelOutlined />} onClick={getReport}>Export</Button>
+            <DataTable<Transaction>
                 columns={columns}
-                data={data}
+                data={transactions}
                 rowKey='id'
                 loading={loading}
                 pagination={pagination}
