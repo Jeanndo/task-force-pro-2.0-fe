@@ -1,46 +1,26 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
+import { useAppDispatch, useMessage } from '@/lib/hooks'
+import { updateSubCategory } from '@/redux/features/subCategorySlice'
+import { Col, Form, Row, Input,Button } from 'antd'
 import React, { FC, useState } from 'react'
-import { Col, Form, Row, Input, Button, Select } from 'antd'
-import { useAppDispatch, useMessage } from '@/lib/hooks';
-import { createSubCategory } from '@/redux/features/subCategorySlice';
 
 type ValuesType = {
     name: string;
     categoryId:string;
 }
-type CategoryOption = {
-    value: string;
-    label: string;
+
+type FormProps = {
+    subcategoryId: string;
+    categoryId:string;
+    name:string;
+    setIsModalOpen:React.Dispatch<React.SetStateAction<boolean>>
+    setSubCategoryUpdated:React.Dispatch<React.SetStateAction<boolean>>
 }
+const UpdateSubCategoryForm: FC<FormProps> = ({setIsModalOpen,setSubCategoryUpdated,subcategoryId,categoryId,name}) => {
 
-
-const categoryData: CategoryOption[] = [
-    {
-        value: "Category 1",
-        label: "Category 1",
-    },
-    {
-        value: "Category 2",
-        label: "Category 2",
-    },
-    {
-        value: "Category 3",
-        label: "Category 3",
-    },
-    {
-        value: "Category 4",
-        label: "Category 4",
-    }
-]
-
-type FormProps ={
-    setSubCategoryAdded:React.Dispatch<React.SetStateAction<boolean>>;
-    setIsModalOpen:React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const AddSubCategoryForm: FC<FormProps> = ({setSubCategoryAdded,setIsModalOpen}) => {
-
+    console.log("categoryId",categoryId)
+    
     const dispatch = useAppDispatch()
     const messenger = useMessage()
     const [form] = Form.useForm()
@@ -48,22 +28,22 @@ const AddSubCategoryForm: FC<FormProps> = ({setSubCategoryAdded,setIsModalOpen})
 
     const onFinish = (values: ValuesType) => {
         setLoading(true)
-        setSubCategoryAdded(true)
-        dispatch(createSubCategory(values)).then((response)=>{
-            if (response) {
+        setSubCategoryUpdated(true)
+        dispatch(updateSubCategory({id:subcategoryId,categoryId:values.categoryId,name:values.name})).then((response)=>{
+            if(response){
                 //@ts-ignore
-                if (response.payload.status === 201) {
+                if(response.payload.status===200){
                     //@ts-ignore
                     messenger.success(response.payload.message)
                     setLoading(false)
                     form.resetFields()
                     setIsModalOpen(false)
-                    setSubCategoryAdded(false)
-                } else {
+                    setSubCategoryUpdated(false)
+                }else{
                     //@ts-ignore
                     messenger.warning(response.payload.message)
                     setLoading(false)
-                    setSubCategoryAdded(false)
+                    setSubCategoryUpdated(false)
                 }
             }
         })
@@ -72,16 +52,15 @@ const AddSubCategoryForm: FC<FormProps> = ({setSubCategoryAdded,setIsModalOpen})
     return (
         <Form
             form={form}
-            name="add-sub-category-form"
+            name="update-sub-category-form"
             onFinish={onFinish}
             initialValues={{
-                name: '',
-                categoryId: ""
+                name: name,
             }}
             layout='vertical'
         >
             <Row gutter={[16, 8]}>
-                <Col xs={24} sm={12}>
+                <Col xs={24}>
                     <Form.Item
                         label="Sub Category Name"
                         name="name"
@@ -89,25 +68,24 @@ const AddSubCategoryForm: FC<FormProps> = ({setSubCategoryAdded,setIsModalOpen})
                     >
                         <Input placeholder="Enter Sub Category Name" />
                     </Form.Item>
-
                 </Col>
-                <Col xs={24} sm={12}>
+                <Col xs={24}>
                     <Form.Item
-                        label="Select Category"
+                        label="Category Name"
                         name="categoryId"
-                        rules={[{ required: true, message: 'Select Category' }]}
+                        rules={[{ required: true, message: 'Enter Category Name' }]}
                     >
-                        <Select showSearch allowClear placeholder="Select Category" options={categoryData} />
+                        <Input placeholder="Enter Category Name" />
                     </Form.Item>
                 </Col>
             </Row>
             <Form.Item className='flex justify-end items-end'>
                 <Button loading={loading} type="primary" htmlType="submit">
-                    Submit
+                    Update
                 </Button>
             </Form.Item>
         </Form>
     )
 }
 
-export default AddSubCategoryForm
+export default UpdateSubCategoryForm
