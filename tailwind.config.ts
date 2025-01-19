@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { Config } from "tailwindcss";
 import colors from "tailwindcss/colors";
 import formsPlugin from "@tailwindcss/forms";
@@ -132,5 +133,13 @@ export default {
         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
     },
   ],
-  plugins: [formsPlugin]
+  //@ts-ignore
+  plugins: [formsPlugin,function({addUtilities}){
+    const newUtilities = {
+      '.clip-path-shape': {
+        'clip-path': 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)',
+      },
+    }
+    addUtilities(newUtilities, ['responsive', 'hover'])
+  }]
 } satisfies Config;

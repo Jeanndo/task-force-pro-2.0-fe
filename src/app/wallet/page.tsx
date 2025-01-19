@@ -35,10 +35,10 @@ const WalletDashboard: FC = () => {
             </Row>
             <div className="w-full mt-5">
                 <Row gutter={[16,8]}>
-                <Col className="gutter-row" xs={24} sm={16}>
+                <Col className="gutter-row" xs={24} sm={24} md={24} lg={16}>
                 <BalanceSummaryChart/>
                 </Col>
-                <Col className="gutter-row" xs={24} sm={8}>
+                <Col className="gutter-row" xs={24} sm={24} md={24} lg={8}>
                 <PieChartForIncomeAndExpense/>
                 </Col>
                 </Row>

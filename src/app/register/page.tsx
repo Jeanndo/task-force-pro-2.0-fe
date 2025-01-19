@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import React, { FC } from 'react'
+import SignUpForm from '@/components/forms/SignupForm'
 import Link from 'next/link'
-import LoginForm from '@/components/forms/LoginForm'
+import React, { FC } from 'react'
 
-
-const Home: FC = () => {
+const Register: FC = () => {
     return (
         <div className="bg-blue-500  flex justify-center items-center h-screen">
             <div className="w-1/2 h-screen hidden lg:block clip-path-shape">
@@ -141,11 +140,11 @@ const Home: FC = () => {
             <div className="lg:p-20 md:p-52 sm:20 p-8 w-full lg:w-1/2 2xl:p-40">
                 <h1 className="text-2xl font-semibold mb-8 text-white text-center">Welcome to e-wallet!!</h1>
                 <div className="bg-white shadow-2xl p-2 rounded-sm">
-                    <LoginForm />
+                    <SignUpForm />
                 </div>
 
                 <div className="mt-6 text-white text-center">
-                    <Link href="/register" className="underline">No account? Signup here</Link>
+                    <Link href="/" className="underline">Have account? Login here</Link>
                 </div>
                 <h2 className="text-sm text-white  text-center mt-8">Powered by Task Force Pro 2.0 Student.</h2>
             </div>
@@ -153,4 +152,4 @@ const Home: FC = () => {
     )
 }
 
-export default Home
+export default Register
