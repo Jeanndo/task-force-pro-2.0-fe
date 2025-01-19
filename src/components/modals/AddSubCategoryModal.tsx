@@ -3,7 +3,10 @@ import { Button, Modal } from 'antd';
 import React, { FC, useState } from 'react'
 import AddSubCategoryForm from '../forms/AddSubCategoryForm';
 
-const AddSubCategoryModal: FC = () => {
+type ModalProps = {
+    setSubCategoryAdded: React.Dispatch<React.SetStateAction<boolean>>
+}
+const AddSubCategoryModal: FC<ModalProps> = ({ setSubCategoryAdded }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,7 +28,10 @@ const AddSubCategoryModal: FC = () => {
                 ADD SUB CATEGORY
             </Button>
             <Modal footer={null} title="SUB CATEGORY" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <AddSubCategoryForm />
+                <AddSubCategoryForm
+                    setSubCategoryAdded={setSubCategoryAdded}
+                    setIsModalOpen={setIsModalOpen}
+                />
             </Modal>
         </>
     )
