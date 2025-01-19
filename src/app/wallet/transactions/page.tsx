@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
 import React, { FC, useEffect, useState } from 'react'
-import { Tag, type TablePaginationConfig, type TableProps } from 'antd';
+import { Button, Tag, type TablePaginationConfig, type TableProps } from 'antd';
 import BreadCrumbs from '@/components/BreadCrumb/BreadCrumb';
 import DataTable from '@/components/table/DataTable';
 import AddTransactionModal from '@/components/modals/AddTransactionModal';
 import { useAppDispatch, useMessage } from '@/lib/hooks';
 import { Transaction } from '@/lib/Interfaces';
-import { deleteTransaction, getTransactions } from '@/redux/features/transactionSlice';
+import { deleteTransaction, getTransactionReport, getTransactions } from '@/redux/features/transactionSlice';
 import UpdateTransactionModal from '@/components/modals/UpdateTransactionModal';
 import DeleteModal from '@/components/modals/DeleteModal';
 import moment from 'moment';
+import { FileExcelOutlined } from '@ant-design/icons';
 
 const expandedRowRender = (record: Transaction) => (
     <div className="bg-gray-200 flex justify-start text-sm p-2">
@@ -114,6 +115,19 @@ const Transactions: FC = () => {
         })
     }
 
+    const getReport = () =>{
+        dispatch(getTransactionReport()).then((response)=>{
+            if(response){
+                //@ts-ignore
+                if(response.payload.type){
+                    messenger.success("Check your downloaded report in your downloads folder")
+                }else{
+                    messenger.warning("Error downloading report")
+                }
+            }
+        })
+    }
+
     const columns: TableProps<Transaction>['columns'] = [
         {
             title: 'Amount',
@@ -182,6 +196,7 @@ const Transactions: FC = () => {
                     { title: 'DASHBOARD', href: '/wallet' },
                     { title: 'TRANSACTIONS' }]} />
                 <AddTransactionModal setTransactionAdded={setTransactionAdded} />
+                <Button type="primary" className="!bg-green-500" icon={<FileExcelOutlined/>} onClick={getReport}>Export</Button>
             </div>
             <DataTable<Transaction>
                 columns={columns}

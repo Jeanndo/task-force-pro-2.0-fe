@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 import { TransactionState, ErrorResponse, IdType, TransactionResponse, TransactionPayload, TransactionsResponse, TransactionParams, UpdateTransactionPayload, TransactionSummaryResponse } from "@/lib/Interfaces";
@@ -7,7 +8,7 @@ import instance from "@/lib/utils";
 const initialState: TransactionState = {
     transaction: null,
     transactions: [],
-    summary:[],
+    summary: [],
     loading: 'idle',
     success: false,
     message: "",
@@ -111,22 +112,37 @@ const transactionSlice = createSlice({
                 state.error = message
             }
 
-        }).addCase(getTransactionsSummary.pending,(state)=>{
+        }).addCase(getTransactionsSummary.pending, (state) => {
             state.loading = 'pending';
             state.success = false;
             state.error = null;
-        }).addCase(getTransactionsSummary.fulfilled,(state, action) => {
+        }).addCase(getTransactionsSummary.fulfilled, (state, action) => {
             state.loading = 'succeeded';
             state.success = true;
             state.error = null;
             state.summary = action.payload.data;
-        }).addCase(getTransactionsSummary.rejected,(state,action)=>{
+        }).addCase(getTransactionsSummary.rejected, (state, action) => {
             state.loading = 'failed';
             state.success = false;
 
             if (action.payload) {
                 const { message } = action.payload
                 state.error = message
+            }
+        }).addCase(getTransactionReport.pending, (state) => {
+            state.loading = 'pending';
+            state.success = false;
+            state.error = null;
+        }).addCase(getTransactionReport.fulfilled, (state) => {
+            state.loading = 'succeeded';
+            state.success = true;
+            state.error = null;
+            state.message = 'Report completed successfully';
+        }).addCase(getTransactionReport.rejected, (state, action) => {
+            state.loading = 'failed';
+            state.success = false;
+            if (action.payload) {
+                state.error = "Error downloading report"
             }
         })
     },
@@ -245,6 +261,51 @@ export const getTransactionsSummary = createAsyncThunk<TransactionSummaryRespons
         }
     }
 )
+
+
+
+export const getTransactionReport = createAsyncThunk<TransactionResponse, void, { rejectValue: ErrorResponse }>(
+    'transaction/generate-report',
+    //@ts-ignore
+    async (_, thunkAPI) => {
+
+        try {
+
+            const config = {
+                responseType: 'blob',
+                headers: {
+                    'Content-Disposition': `attachment; filename=sales.xlsx`,
+                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                },
+            }
+
+            //@ts-ignore
+            const { data } = await instance.get(`/transactions/generate-report`, config);
+
+            const url = window.URL.createObjectURL(new Blob([data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `transaction-report.xlsx`);
+            document.body.appendChild(link);
+            link.click();
+
+            return {
+                fileName: `transaction-report.xlsx`,
+                size: data.size,
+                type: data.type
+            };
+
+        } catch (error) {
+
+            if (isAxiosError(error) && error.response) {
+                const errorResponse = error.response.data
+                return thunkAPI.rejectWithValue(errorResponse)
+            }
+            return thunkAPI.rejectWithValue(genericErrorResponse);
+        }
+
+    }
+);
 
 
 export const { } = transactionSlice.actions
