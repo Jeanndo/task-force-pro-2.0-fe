@@ -126,6 +126,11 @@ export interface TransactionSummary {
             Expense: number;
 }
 
+export interface TotalIncomeAndExpenses{
+    Income: number;
+    Expense: number;
+}
+
 export interface Transaction {
     id: string;
     description: string;
@@ -147,6 +152,7 @@ export interface TransactionState {
     transaction: Transaction | null;
     transactions: Transaction[];
     summary:TransactionSummary[];
+    totalIncomeAndExpenses: TotalIncomeAndExpenses;
     loading: 'idle' | 'pending' | 'succeeded' | 'failed'
     success: boolean;
     message: string;
@@ -188,6 +194,7 @@ export type TransactionsResponse = ApiResponse<Transaction[]>
 export type BudgetResponse = ApiResponse<Budget>
 export type BudgetsResponse = ApiResponse<Budget[]>
 export type TransactionSummaryResponse = ApiResponse<TransactionSummary[]>
+export type TotalIncomeAndExpensesResponse = ApiResponse<TotalIncomeAndExpenses>
 
 
 //#region Payloads
