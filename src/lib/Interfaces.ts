@@ -120,6 +120,12 @@ export interface SubcategoryState {
     error: string | null;
 }
 
+export interface TransactionSummary {
+            date: string;
+            Income: number
+            Expense: number;
+}
+
 export interface Transaction {
     id: string;
     description: string;
@@ -140,6 +146,7 @@ export interface Transaction {
 export interface TransactionState {
     transaction: Transaction | null;
     transactions: Transaction[];
+    summary:TransactionSummary[];
     loading: 'idle' | 'pending' | 'succeeded' | 'failed'
     success: boolean;
     message: string;
@@ -180,6 +187,7 @@ export type TransactionResponse = ApiResponse<Transaction>
 export type TransactionsResponse = ApiResponse<Transaction[]>
 export type BudgetResponse = ApiResponse<Budget>
 export type BudgetsResponse = ApiResponse<Budget[]>
+export type TransactionSummaryResponse = ApiResponse<TransactionSummary[]>
 
 
 //#region Payloads

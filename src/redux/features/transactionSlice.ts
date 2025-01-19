@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
-import { CategoryResponse, TransactionState, ErrorResponse, IdType, TransactionResponse, TransactionPayload, TransactionsResponse, TransactionParams, UpdateTransactionPayload } from "@/lib/Interfaces";
+import { TransactionState, ErrorResponse, IdType, TransactionResponse, TransactionPayload, TransactionsResponse, TransactionParams, UpdateTransactionPayload, TransactionSummaryResponse } from "@/lib/Interfaces";
 import { genericErrorResponse } from "@/lib/constants";
 import instance from "@/lib/utils";
 
 const initialState: TransactionState = {
     transaction: null,
     transactions: [],
+    summary:[],
     loading: 'idle',
     success: false,
     message: "",
@@ -110,6 +111,23 @@ const transactionSlice = createSlice({
                 state.error = message
             }
 
+        }).addCase(getTransactionsSummary.pending,(state)=>{
+            state.loading = 'pending';
+            state.success = false;
+            state.error = null;
+        }).addCase(getTransactionsSummary.fulfilled,(state, action) => {
+            state.loading = 'succeeded';
+            state.success = true;
+            state.error = null;
+            state.summary = action.payload.data;
+        }).addCase(getTransactionsSummary.rejected,(state,action)=>{
+            state.loading = 'failed';
+            state.success = false;
+
+            if (action.payload) {
+                const { message } = action.payload
+                state.error = message
+            }
         })
     },
 });
@@ -194,11 +212,28 @@ export const updateTransaction = createAsyncThunk<TransactionResponse, UpdateTra
 )
 
 
-export const deleteTransaction = createAsyncThunk<CategoryResponse, IdType, { rejectValue: ErrorResponse }>(
+export const deleteTransaction = createAsyncThunk<TransactionResponse, IdType, { rejectValue: ErrorResponse }>(
     "transaction/delete-transaction",
     async (payload, thunkAPI) => {
         try {
             const { data } = await instance.delete(`/transactions/${payload.id}`)
+            return data
+        } catch (error) {
+
+            if (isAxiosError(error) && error.response) {
+                const errorResponse = error.response.data
+                return thunkAPI.rejectWithValue(errorResponse)
+            }
+            return thunkAPI.rejectWithValue(genericErrorResponse);
+        }
+    }
+)
+
+export const getTransactionsSummary = createAsyncThunk<TransactionSummaryResponse, void, { rejectValue: ErrorResponse }>(
+    "transaction/summary",
+    async (_, thunkAPI) => {
+        try {
+            const { data } = await instance.get(`/transactions/summary`)
             return data
         } catch (error) {
 
