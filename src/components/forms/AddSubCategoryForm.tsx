@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Col, Form, Row, Input, Button, Select } from 'antd'
 import { useAppDispatch, useMessage } from '@/lib/hooks';
 import { createSubCategory } from '@/redux/features/subCategorySlice';
+import { getCategories } from '@/redux/features/categorySlice';
+import { Category } from '@/lib/Interfaces';
 
 type ValuesType = {
     name: string;
@@ -14,25 +16,6 @@ type CategoryOption = {
     label: string;
 }
 
-
-const categoryData: CategoryOption[] = [
-    {
-        value: "Category 1",
-        label: "Category 1",
-    },
-    {
-        value: "Category 2",
-        label: "Category 2",
-    },
-    {
-        value: "Category 3",
-        label: "Category 3",
-    },
-    {
-        value: "Category 4",
-        label: "Category 4",
-    }
-]
 
 type FormProps ={
     setSubCategoryAdded:React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,6 +28,26 @@ const AddSubCategoryForm: FC<FormProps> = ({setSubCategoryAdded,setIsModalOpen})
     const messenger = useMessage()
     const [form] = Form.useForm()
     const [loading, setLoading] = useState<boolean>(false)
+    const [categories,setCategories] = useState<CategoryOption[]>([])
+
+
+    useEffect(()=>{
+        dispatch(getCategories({})).then((response)=>{
+            if (response) {
+                //@ts-ignore
+                if (response.payload.status === 200) {
+                    //@ts-ignore
+                    const availableCategories = response.payload.data.rows
+                    setCategories(availableCategories.map((category: Category) => ({
+                        value: category.id,
+                        label: category.name
+                    })))
+                }
+            }
+
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     const onFinish = (values: ValuesType) => {
         setLoading(true)
@@ -68,6 +71,8 @@ const AddSubCategoryForm: FC<FormProps> = ({setSubCategoryAdded,setIsModalOpen})
             }
         })
     }
+
+
 
     return (
         <Form
@@ -97,7 +102,7 @@ const AddSubCategoryForm: FC<FormProps> = ({setSubCategoryAdded,setIsModalOpen})
                         name="categoryId"
                         rules={[{ required: true, message: 'Select Category' }]}
                     >
-                        <Select showSearch allowClear placeholder="Select Category" options={categoryData} />
+                        <Select showSearch allowClear placeholder="Select Category" options={categories} />
                     </Form.Item>
                 </Col>
             </Row>

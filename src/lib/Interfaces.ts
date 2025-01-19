@@ -241,7 +241,7 @@ export type UpdateSubcategoryPayload = {
 export type TransactionPayload = {
     accountId: string;
     categoryId: string;
-    subcategoryId: string | null | undefined;
+    subcategoryId?: string | null | undefined;
     amount: number;
     description: string;
     type: string;
@@ -251,7 +251,7 @@ export type UpdateTransactionPayload = {
     id: string;
     accountId: string;
     categoryId: string;
-    subcategoryId: string | null | undefined;
+    subcategoryId?: string | null | undefined;
     amount: number;
     description: string;
     type: string;
@@ -259,15 +259,15 @@ export type UpdateTransactionPayload = {
 
 export type BudgetPayload = {
     amount:number;
-    startDate:string;
-    endDate:string;
+    startDate:string|null;
+    endDate:string|null;
 }
 
 export type UpdateBudgetPayload = {
     id: string;
     amount:number;
-    startDate:string;
-    endDate:string;
+    startDate:string|string[];
+    endDate:string|string[];
 }
 
 //#region Params

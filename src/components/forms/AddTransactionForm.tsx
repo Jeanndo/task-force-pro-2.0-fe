@@ -1,24 +1,26 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
+import { useAppDispatch, useMessage } from '@/lib/hooks'
+import { Account, Category } from '@/lib/Interfaces'
+import { getAccounts } from '@/redux/features/accountSlice'
+import { getCategories } from '@/redux/features/categorySlice'
+import { createTransaction } from '@/redux/features/transactionSlice'
 import { Col, Form, Row, Input, Select, Button } from 'antd'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 
-type AccountType = {
-    value: string,
-    label: string
+type OptionType = {
+    value: string;
+    label: string;
 }
 
-const AccountOptions: AccountType[] = [
+const transactionType: OptionType[] = [
     {
-        value: 'BANK',
-        label: 'BANK'
+        value: 'Expense',
+        label: 'Expense'
     },
     {
-        value: 'MOILE MONEY',
-        label: 'MOILE MONEY'
-    },
-    {
-        value: 'CASH',
-        label: 'CASH'
+        value: 'Income',
+        label: 'Income'
     }
 ]
 
@@ -29,15 +31,82 @@ type ValuesType = {
     type: string;
     description: string;
 }
-const AddTransactionForm: FC = () => {
+
+
+
+type FormProps = {
+    setTransactionAdded: React.Dispatch<React.SetStateAction<boolean>>
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+const AddTransactionForm: FC<FormProps> = ({ setTransactionAdded, setIsModalOpen }) => {
+
+    const dispatch = useAppDispatch()
+    const messenger = useMessage()
 
     const [form] = Form.useForm()
     const [loading, setLoading] = useState<boolean>(false)
 
+    const [categories, setCategories] = useState<OptionType[]>([])
+    const [accountOptions, setAccountOptions] = useState<OptionType[]>([])
+
+
+    useEffect(() => {
+        dispatch(getCategories({})).then((response) => {
+            if (response) {
+                //@ts-ignore
+                if (response.payload.status === 200) {
+                    //@ts-ignore
+                    const availableCategories = response.payload.data.rows
+                    setCategories(availableCategories.map((category: Category) => ({
+                        value: category.id,
+                        label: category.name
+                    })))
+                }
+            }
+
+        })
+
+        dispatch(getAccounts({})).then((response) => {
+            if (response) {
+                //@ts-ignore
+                if (response.payload.status === 200) {
+                    //@ts-ignore
+                    const availableAccounts = response.payload.data.rows
+                    setAccountOptions(availableAccounts.map((account: Account) => ({
+                        value: account.id,
+                        label: account.name
+                    })))
+                }
+            }
+
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     const onFinish = (values: ValuesType) => {
-        setLoading(false)
-        console.log('Received values of form: ', values)
+        setLoading(true)
+        setTransactionAdded(true)
+        dispatch(createTransaction(values)).then((response) => {
+            if (response) {
+                //@ts-ignore
+                if (response.payload.status === 201) {
+                    //@ts-ignore
+                    messenger.success(response.payload.message)
+                    setLoading(false)
+                    form.resetFields()
+                    setIsModalOpen(false)
+                    setTransactionAdded(false)
+                } else {
+                    //@ts-ignore
+                    messenger.warning(response.payload.message)
+                    setLoading(false)
+                    setTransactionAdded(false)
+                }
+            }
+        })
     }
+
+    //createTransaction getAccounts
 
     return (
         <Form
@@ -48,8 +117,8 @@ const AddTransactionForm: FC = () => {
                 accountId: '',
                 categoryId: '',
                 amount: 0,
-                type:'',
-                description:''
+                type: '',
+                description: ''
             }}
             layout='vertical'
         >
@@ -64,7 +133,7 @@ const AddTransactionForm: FC = () => {
                             showSearch
                             allowClear
                             placeholder="Select Account"
-                            options={AccountOptions}
+                            options={accountOptions}
                         />
                     </Form.Item>
                 </Col>
@@ -78,12 +147,12 @@ const AddTransactionForm: FC = () => {
                             showSearch
                             allowClear
                             placeholder="Select Category"
-                            options={AccountOptions}
+                            options={categories}
                         />
                     </Form.Item>
                 </Col>
             </Row>
-            <Row gutter={[16, 8]}>
+            {/* <Row gutter={[16, 8]}>
                 <Col xs={24}>
                     <Form.Item
                         label="Sub Category"
@@ -94,11 +163,11 @@ const AddTransactionForm: FC = () => {
                             showSearch
                             allowClear
                             placeholder="Select Sub Category"
-                            options={AccountOptions}
+                            options={transactionType}
                         />
                     </Form.Item>
                 </Col>
-            </Row>
+            </Row> */}
             <Row gutter={[16, 8]}>
                 <Col xs={24} sm={12}>
                     <Form.Item
@@ -117,7 +186,7 @@ const AddTransactionForm: FC = () => {
                     >
                         <Select showSearch
                             allowClear
-                            options={AccountOptions}
+                            options={transactionType}
                             placeholder="Select Type"
                         />
                     </Form.Item>
@@ -130,7 +199,7 @@ const AddTransactionForm: FC = () => {
                         name="description"
                         rules={[{ required: true, message: 'Enter Description' }]}
                     >
-                        <Input  placeholder="Enter Description" />
+                        <Input placeholder="Enter Description" />
                     </Form.Item>
                 </Col>
             </Row>
