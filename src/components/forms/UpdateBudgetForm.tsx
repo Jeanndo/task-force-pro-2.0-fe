@@ -2,13 +2,9 @@
 'use client'
 import React, { FC, useState } from 'react'
 import { Col, Form, Row, Button, DatePicker, Input } from 'antd'
-import type { Dayjs } from 'dayjs';
+import type { DatePickerProps } from 'antd';
 import { useAppDispatch, useMessage } from '@/lib/hooks';
-import { createBudget } from '@/redux/features/budgetSlice';
-
-
-const { RangePicker } = DatePicker;
-
+import { updateBudget } from '@/redux/features/budgetSlice';
 
 type ValuesType = {
     dates: string;
@@ -16,75 +12,87 @@ type ValuesType = {
 }
 
 type FormProps = {
-    setBudgetAdded: React.Dispatch<React.SetStateAction<boolean>>
-    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setBudgetUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+    amount: number;
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    budgetId: string;
 }
-const SetBudgetForm: FC<FormProps> = ({ setBudgetAdded, setIsModalOpen }) => {
+const UpdateBudgetForm: FC<FormProps> = ({ budgetId, setBudgetUpdated, amount, setIsModalOpen }) => {
 
     const dispatch = useAppDispatch()
     const messenger = useMessage()
 
     const [form] = Form.useForm()
     const [loading, setLoading] = useState<boolean>(false)
-    const [startDate, setStartDate] = useState<string | null>(null)
-    const [endDate, setEndDate] = useState<string | null>(null)
+    const [startDate, setStartDate] = useState<string | string[]>('')
+    const [endDate, setEndDate] = useState<string | string[]>('')
 
     const onFinish = (values: ValuesType) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { dates, ...rest } = values
-        setLoading(false)
-        setBudgetAdded(true)
-
-        dispatch(createBudget({ startDate, endDate, amount: rest.amount })).then((response) => {
+        setLoading(true)
+        setBudgetUpdated(true)
+        dispatch(updateBudget({ id: budgetId, amount: values.amount, startDate: startDate, endDate: endDate })).then((response) => {
             //@ts-ignore
-            if (response.payload.status === 201) {
+            if (response.payload.status === 200) {
                 //@ts-ignore
                 messenger.success(response.payload.message)
                 setLoading(false)
                 form.resetFields()
                 setIsModalOpen(false)
-                setBudgetAdded(false)
+                setBudgetUpdated(false)
             } else {
                 //@ts-ignore
                 messenger.warning(response.payload.message)
                 setLoading(false)
-                setBudgetAdded(false)
+                setBudgetUpdated(false)
             }
         })
     }
 
-    const onRangeChange = (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
-        if (dates) {
-            setStartDate(dateStrings[0])
-            setEndDate(dateStrings[1])
-        } else {
-            setStartDate('')
-            setEndDate('')
-        }
-    }
+
+    const onStartDateChange: DatePickerProps['onChange'] = (_, dateString) => {
+        setStartDate(dateString)
+    };
+
+    const onEndDateChange: DatePickerProps['onChange'] = (_, dateString) => {
+        setEndDate(dateString)
+    };
 
     return (
         <Form
             form={form}
-            name="set-budget-form"
+            name="update-budget-form"
             onFinish={onFinish}
             initialValues={{
-                dates: undefined,
-                amount: 100,
+                startDate:undefined,
+                endDate:undefined,
+                amount: amount,
             }}
             layout='vertical'
         >
             <Row gutter={[16, 8]}>
                 <Col xs={24} sm={12}>
                     <Form.Item
-                        label="Select Date Range"
-                        name="dates"
+                        label="Select Start Date"
+                        name="startDate"
                         rules={[{ required: true, message: 'Select date range' }]}
                     >
-                        <RangePicker onChange={onRangeChange} className='w-full' />
+                        <DatePicker onChange={onStartDateChange} className='w-full' />
                     </Form.Item>
                 </Col>
+
                 <Col xs={24} sm={12}>
+                    <Form.Item
+                        label="Select Start Date"
+                        name="endDate"
+                        rules={[{ required: true, message: 'Select date range' }]}
+                    >
+                        <DatePicker onChange={onEndDateChange} className='w-full' />
+                    </Form.Item>
+                </Col>
+
+            </Row>
+            <Row gutter={[16, 8]}>
+                <Col xs={24}>
                     <Form.Item
                         label="Budget Limit"
                         name="amount"
@@ -105,4 +113,4 @@ const SetBudgetForm: FC<FormProps> = ({ setBudgetAdded, setIsModalOpen }) => {
     )
 }
 
-export default SetBudgetForm
+export default UpdateBudgetForm

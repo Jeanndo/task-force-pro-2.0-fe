@@ -32,7 +32,6 @@ const SubCategories: FC = () => {
                 limit: pagination.pageSize
             })).then((response) => {
                 if (response) {
-                    console.log("RESPONSE",response)
                     //@ts-ignore
                     if (response.payload.status === 200) {
                         //@ts-ignore
@@ -130,7 +129,7 @@ const SubCategories: FC = () => {
                 render: (value) => <div className='flex justify-center items-center gap-x-4'>
                 <UpdateSubCategoryModal
                     subcategoryId={value.id}
-                    categoryId={value.id}
+                    categoryId={value.categoryId}
                     name={value.name}
                     setSubCategoryUpdated={setSubCategoryUpdated}
                 />
