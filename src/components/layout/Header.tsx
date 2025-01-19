@@ -1,12 +1,14 @@
-import { useTheme, useWallet } from "@/lib/hooks";
+import React, { FC } from "react";
+import { useAppDispatch, useTheme, useWallet } from "@/lib/hooks";
+import { logout } from "@/redux/features/userSlice";
 import { LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 import { Button, Layout } from "antd";
-import React, { FC } from "react";
+
 
 const { Header } = Layout;
-{/* <MoonOutlined /> */ }
-{/* <SunOutlined /> */ }
 const LayoutHeader: FC = () => {
+
+    const dispatch = useAppDispatch()
     const { collapsed, toggleMenu } = useWallet();
     const { theme, toggleTheme } = useTheme()
 
@@ -39,6 +41,7 @@ const LayoutHeader: FC = () => {
                     className="!rounded-full"
                     icon={<LogoutOutlined />}
                     size="small"
+                    onClick={() => dispatch(logout())}
                 />
             </div>
         </Header>

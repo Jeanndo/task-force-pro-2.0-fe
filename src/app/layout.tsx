@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from 'antd';
-import { Montserrat } from "next/font/google"
+import { Montserrat } from "next/font/google";
+import { StoreProvider } from "@/redux/provider/StoreProvider";
+import { MessageProvider } from "@/context/providers/ToastMessageProvider";
 
 
 const montserrat = Montserrat({
@@ -28,31 +30,35 @@ export default function RootLayout({
         className={`${montserrat.className} antialiased dark:bg-gray-950`}
       >
         <AntdRegistry>
-          <ConfigProvider
-            theme={{
-              token: {
-                fontFamily: montserrat.style.fontFamily,
-                borderRadius: 0
-              },
-              components: {
-                Breadcrumb: {
-                  lastItemColor: "#010813",
-                  linkColor: "#3b82f6"
-                },
-                Slider: {
-                  handleActiveColor:"#F00",
-                  trackBg:"#F00",
-                  trackHoverBg:"#F00",
-                  railBg:"#1677ff",
-                  railHoverBg:"#1677ff",
-                  dotBorderColor:"#F00",
-                  dotActiveBorderColor:"#F00",
-                },
-              },
-            }}
-          >
-            {children}
-          </ConfigProvider>
+          <MessageProvider>
+            <StoreProvider>
+              <ConfigProvider
+                theme={{
+                  token: {
+                    fontFamily: montserrat.style.fontFamily,
+                    borderRadius: 0
+                  },
+                  components: {
+                    Breadcrumb: {
+                      lastItemColor: "#010813",
+                      linkColor: "#3b82f6"
+                    },
+                    Slider: {
+                      handleActiveColor: "#F00",
+                      trackBg: "#F00",
+                      trackHoverBg: "#F00",
+                      railBg: "#1677ff",
+                      railHoverBg: "#1677ff",
+                      dotBorderColor: "#F00",
+                      dotActiveBorderColor: "#F00",
+                    },
+                  },
+                }}
+              >
+                {children}
+              </ConfigProvider>
+            </StoreProvider>
+          </MessageProvider>
         </AntdRegistry>
       </body>
     </html>
