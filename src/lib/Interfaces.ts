@@ -44,6 +44,14 @@ export interface Account {
     updatedAt: string;
     deletedAt: string | null
 }
+export interface AccountState{
+    account:Account|null;
+    accounts: Account[];
+    loading: 'idle' | 'pending' | 'succeeded' | 'failed'
+    success: boolean;
+    message: string;
+    error: string | null;
+}
 export interface User {
     id: string;
     firstName: string;
@@ -79,6 +87,8 @@ export interface IdType {
 export type UserResponse = ApiResponse<User>
 export type UsersResponse = ApiResponse<User[]>
 export type LoginResponse = ApiResponse<LoginReturnData>
+export type AccountResponse = ApiResponse<Account>
+export type AccountsResponse = ApiResponse<Account[]>
 
 
 
@@ -106,6 +116,19 @@ export type LoginPayload ={
     password:string;
 }
 
+export type AccountPayload = {
+    name:string;
+    type:string;
+    balance:number;
+}
+
+export type UpdateAccountPayload ={
+    id:string;
+    name:string;
+    type:string;
+    balance:number;
+}
+
 //#region Params
 
 export type UserParams = {
@@ -114,5 +137,6 @@ export type UserParams = {
 }
 
 export type AccountParams = {
-    userId: string;
+    page?: number;
+    limit?:number
 }

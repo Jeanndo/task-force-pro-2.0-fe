@@ -3,7 +3,10 @@ import React, { FC, useState } from 'react';
 import { Button, Modal } from 'antd';
 import AddAccountForm from '../forms/AddAccountForm';
 
-const AddAccountModal: FC = () => {
+type ModalProps = {
+    setAccountAdded:React.Dispatch<React.SetStateAction<boolean>>
+}
+const AddAccountModal: FC<ModalProps> = ({setAccountAdded}) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const showModal = () => {
@@ -24,7 +27,10 @@ const AddAccountModal: FC = () => {
                 ADD ACCOUNT
             </Button>
             <Modal footer={null} title="ADD ACCOUNT" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <AddAccountForm/>
+                <AddAccountForm 
+                setIsModalOpen={setIsModalOpen}
+                setAccountAdded={setAccountAdded}
+                />
             </Modal>
         </>
     );

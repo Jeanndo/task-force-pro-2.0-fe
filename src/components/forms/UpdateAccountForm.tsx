@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
 import { useAppDispatch, useMessage } from '@/lib/hooks'
-import { createAccount } from '@/redux/features/accountSlice'
+import { updateAccount } from '@/redux/features/accountSlice'
 import { Col, Form, Row, Input, Select, Button } from 'antd'
 import React, { FC, useState } from 'react'
 
@@ -32,10 +32,14 @@ type ValuesType = {
 }
 
 type FormProps = {
+    accountId: string;
+    name:string;
+    type:string;
+    balance:number;
     setIsModalOpen:React.Dispatch<React.SetStateAction<boolean>>
-    setAccountAdded:React.Dispatch<React.SetStateAction<boolean>>
+    setAccountUpdated:React.Dispatch<React.SetStateAction<boolean>>
 }
-const AddAccountForm: FC<FormProps> = ({setIsModalOpen,setAccountAdded}) => {
+const UpdateAccountForm: FC<FormProps> = ({setIsModalOpen,setAccountUpdated,accountId,name,type,balance}) => {
 
     const dispatch = useAppDispatch()
     const messenger = useMessage()
@@ -44,22 +48,22 @@ const AddAccountForm: FC<FormProps> = ({setIsModalOpen,setAccountAdded}) => {
 
     const onFinish = (values: ValuesType) => {
         setLoading(true)
-        setAccountAdded(true)
-        dispatch(createAccount(values)).then((response)=>{
+        setAccountUpdated(true)
+        dispatch(updateAccount({id:accountId,name:values.name,type:values.type,balance:Number(values.balance)})).then((response)=>{
             if(response){
                 //@ts-ignore
-                if(response.payload.status===201){
+                if(response.payload.status===200){
                     //@ts-ignore
                     messenger.success(response.payload.message)
                     setLoading(false)
                     form.resetFields()
                     setIsModalOpen(false)
-                    setAccountAdded(false)
+                    setAccountUpdated(false)
                 }else{
                     //@ts-ignore
                     messenger.warning(response.payload.message)
                     setLoading(false)
-                    setAccountAdded(false)
+                    setAccountUpdated(false)
                 }
             }
         })
@@ -68,12 +72,12 @@ const AddAccountForm: FC<FormProps> = ({setIsModalOpen,setAccountAdded}) => {
     return (
         <Form
             form={form}
-            name="add-account-form"
+            name="update-account-form"
             onFinish={onFinish}
             initialValues={{
-                name: '',
-                type: '',
-                balance: 0
+                name: name,
+                type: type,
+                balance: balance
             }}
             layout='vertical'
         >
@@ -115,11 +119,11 @@ const AddAccountForm: FC<FormProps> = ({setIsModalOpen,setAccountAdded}) => {
             </Row>
             <Form.Item className='flex justify-end items-end'>
                 <Button loading={loading} type="primary" htmlType="submit">
-                    Submit
+                    Update
                 </Button>
             </Form.Item>
         </Form>
     )
 }
 
-export default AddAccountForm
+export default UpdateAccountForm
