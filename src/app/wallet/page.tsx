@@ -11,8 +11,8 @@ import { BalanceSummaryChart } from '@/components/Analytics/BalanceSummary'
 import { PieChartForIncomeAndExpense } from '@/components/Analytics/WalletPieChart'
 import CurrentTransactions from '@/components/CurrentTransactions/CurrentTransactions'
 import { useAppDispatch, useMessage } from '@/lib/hooks'
-import { getTransactionsSummary } from '@/redux/features/transactionSlice'
-import { TransactionSummary } from '@/lib/Interfaces'
+import { getTotalIncomeTotalExpenses, getTransactionsSummary } from '@/redux/features/transactionSlice'
+import { TotalIncomeAndExpenses, TransactionSummary } from '@/lib/Interfaces'
 
 
 const WalletDashboard: FC = () => {
@@ -21,6 +21,10 @@ const WalletDashboard: FC = () => {
     const messenger = useMessage()
     const [loading, setLoading] = useState<boolean>(false)
     const [transactionsSummary, setTransactionsSummary] = useState<TransactionSummary[]>([])
+    const [totalInAndOut,setTotalInAndOut] = useState<TotalIncomeAndExpenses>({
+        Income:0,
+        Expense:0
+    })
 
     useEffect(() => {
         setLoading(true)
@@ -36,6 +40,25 @@ const WalletDashboard: FC = () => {
                     //@ts-ignore
                     messenger.error(response.payload.message)
                     setLoading(false)
+                }
+
+            }
+
+        })
+
+        dispatch(getTotalIncomeTotalExpenses()).then((response)=>{
+            if (response) {
+                //@ts-ignore
+                if (response.payload.status === 200) {
+                    //@ts-ignore
+                    const availableInAndOuts = response.payload.data
+                    setTotalInAndOut(availableInAndOuts)
+                    setLoading(false)
+                } else {
+                    //@ts-ignore
+                    messenger.error(response.payload.message)
+                    setLoading(false)
+                    setTotalInAndOut({Income:0,Expense:0})
                 }
 
             }
@@ -68,7 +91,7 @@ const WalletDashboard: FC = () => {
                         <BalanceSummaryChart transactionsSummary={transactionsSummary} />
                     </Col>
                     <Col className="gutter-row" xs={24} sm={24} md={24} lg={8}>
-                        <PieChartForIncomeAndExpense />
+                        <PieChartForIncomeAndExpense totalInAndOut={totalInAndOut} />
                     </Col>
                 </Row>
 
