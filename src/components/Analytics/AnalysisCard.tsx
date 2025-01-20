@@ -1,14 +1,41 @@
-import React, { FC, ReactNode } from 'react'
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import React, { FC, ReactNode, useEffect, useState } from 'react'
 import { Skeleton } from "antd"
 import { Card } from '@tremor/react';
+import { useAppDispatch } from '@/lib/hooks';
+import { getAccounts } from '@/redux/features/accountSlice';
+import { Account } from '@/lib/Interfaces';
+import { formatMoney } from '@/lib/utils';
 interface CardProps {
     title: string;
-    metrics: string | number;
     icon: ReactNode;
     loading?: boolean;
 }
 
-const AnalyticsCard: FC<CardProps> = ({ title, metrics, icon, loading }) => {
+const AnalyticsCard: FC<CardProps> = ({ title, icon, loading }) => {
+    const dispatch = useAppDispatch()
+
+    const [accounts,setAccounts] = useState<number>(0)
+    const [globalBalance,setGlobalBalance] = useState<number>(0)
+
+    useEffect(()=>{
+        dispatch(getAccounts({})).then((response)=>{
+            if(response){
+                //@ts-ignore
+                if(response.payload?.status===200){
+                    //@ts-ignore
+                    const availableAccounts = response.payload.data.rows
+                    const totalBalance = availableAccounts.reduce((acc:number, account:Account)=>acc+account.balance,0)
+                    setGlobalBalance(totalBalance)
+                    setAccounts(availableAccounts.length)
+                }else{
+                    setAccounts(0)
+                }
+            }
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
+    
     return (
         <>
             {loading ? <Skeleton avatar paragraph={{ rows: 2 }} /> :
@@ -20,10 +47,10 @@ const AnalyticsCard: FC<CardProps> = ({ title, metrics, icon, loading }) => {
                         <div className="text-lg text-center  text-blue-500 font-semibold">
                             {title}
                         </div>
-                        <div className="font-semibold">10 Accounts</div>
+                        <div className="font-semibold">{accounts} Accounts</div>
                     </div>
                     <span className="text-lg block text-center font-bold text-gray-700">
-                        {metrics}
+                        {formatMoney({amount:globalBalance,currency:'RWF',locale:'en-US'})}
                     </span>
                 </Card>}
         </>

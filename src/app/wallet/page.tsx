@@ -3,7 +3,6 @@
 'use client'
 import React, { FC, useEffect, useState } from 'react'
 import AnalyticsCard from '@/components/Analytics/AnalysisCard'
-import { formatMoney } from '@/lib/utils'
 import { DollarCircleOutlined } from '@ant-design/icons'
 import { Col, Row } from 'antd'
 import BudgetCard from '@/components/Analytics/BudgetCard'
@@ -73,7 +72,6 @@ const WalletDashboard: FC = () => {
                     <AnalyticsCard
                         title={"Global Balance"}
                         icon={<DollarCircleOutlined />}
-                        metrics={formatMoney({ amount: 1000, currency: "RWF", locale: "en-US" })}
                         loading={loading}
                     />
                 </Col>
@@ -81,6 +79,7 @@ const WalletDashboard: FC = () => {
                     <BudgetCard
                         title={"Current Budegt"}
                         loading={loading}
+                        totalInAndOut={totalInAndOut}
                     />
                 </Col>
 
