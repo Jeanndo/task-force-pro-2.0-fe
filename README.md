@@ -28,7 +28,7 @@
 ### [Backend Repo Link](https://github.com/Jeanndo/task-force-pro-2.0-be)
 
 
-# PROJECT SET
+# PROJECT SETUP
 
  ## Frontend
 
@@ -46,6 +46,8 @@
   Install Dependances by running this command
 
   `npm install or npm install --legacy-peer-deps` if npm registry can't resolve some dependences
+
+  Create `.env.local` file at root level and backend url like so `NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1`
 
   Start the project by running this command
 
