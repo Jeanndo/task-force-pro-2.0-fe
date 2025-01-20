@@ -1,13 +1,18 @@
 'use client'
 import React, { FC, useState } from 'react';
 import { Slider } from 'antd';
+import { TotalIncomeAndExpenses } from '@/lib/Interfaces';
+
+type SliderProps = {
+    currentBudget:number;
+    totalInAndOut: TotalIncomeAndExpenses
+}
 
 
-const AnalyticsBudgetSlider: FC = () => {
+const AnalyticsBudgetSlider: FC<SliderProps> = ({currentBudget,totalInAndOut}) => {
 
-    const [budget, setBudget] = useState<number>(40000);
+    const [budget, setBudget] = useState<number>(totalInAndOut.Expense);
     const minLimit = 0;
-    const maxLimit = 100000;
 
     const handleSliderChange = (value: number) => {
         setBudget(value);
@@ -17,7 +22,7 @@ const AnalyticsBudgetSlider: FC = () => {
         <>
             <Slider
                 min={minLimit}
-                max={maxLimit}
+                max={currentBudget}
                 onChange={handleSliderChange}
                 value={budget}
                 tooltip={{ formatter: (value) => `${value} FRW` }}
