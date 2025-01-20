@@ -17,6 +17,7 @@
 
 `Creating categories and sub categories`
 `Account management, you can create more accounts as you like and select which one to use on transaction.`
+`You will also find a green button to download your transaction report in excel file`
 
 ## Deployment
 
@@ -100,10 +101,21 @@ With all command above you are all set 🚀
 your can find other scripts under script section of the `package json` file
 
 
-SCREEN SHOOTS
-This is a dashboard for transaction analysis
+SOME SCREEN SHOOTS
+## Home Page
+<img width="955" alt="image" src="https://github.com/user-attachments/assets/75dffb3b-0983-4112-b06c-b435110af35d" />
+
+## This is a dashboard for transaction analysis
+
+
 
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/3816878c-f184-4227-96ad-1c4639fdbb77" />
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/02f1b2c6-1384-4a42-9833-cabdef34078b" />
+
+<img width="955" alt="image" src="https://github.com/user-attachments/assets/a28dcba8-ee81-4c1c-a8fe-6af853e8fb8d" />
+
+## Report
+<img width="948" alt="image" src="https://github.com/user-attachments/assets/74532d7b-588a-4766-8864-a46159ae5c24" />
+
 
 
