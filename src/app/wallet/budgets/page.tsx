@@ -17,11 +17,11 @@ import moment from 'moment';
 
 const Budgets: FC = () => {
 
-    const dispatch = useAppDispatch()
-    const messenger = useMessage()
+    const dispatch = useAppDispatch() // Action Dispatcher
+    const messenger = useMessage() // Message Toaster
 
     const [loading, setLoading] = useState(false);
-    const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0, });
+    const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0, }); //Pagination
 
     const [budgets, setBudgets] = useState<Budget[]>([])
     const [budgetAdded, setBudgetAdded] = useState<boolean>(false);
@@ -30,6 +30,7 @@ const Budgets: FC = () => {
     const [currentBudget, setCurrentBudget] = useState<number>(0)
 
     useEffect(() => {
+        //Get all budgets
         dispatch(getBudgets({
             page: pagination.current,
             limit: pagination.pageSize
@@ -43,6 +44,7 @@ const Budgets: FC = () => {
                     setBudgets(availableBudgets)
                     setLoading(false)
 
+                    // update pagination
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -59,8 +61,12 @@ const Budgets: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [budgetAdded, budgetDeleted, budgetUpdated])
 
+    // get budgets on pagination change
     const handleTableChange = (pagination: TablePaginationConfig) => {
+
         setLoading(true)
+
+        //get Pagination
         dispatch(getBudgets({
             page: pagination.current,
             limit: pagination.pageSize
@@ -74,7 +80,7 @@ const Budgets: FC = () => {
                     setBudgets(availableBudgets)
                     setLoading(false)
 
-
+                    // update pagination
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -94,6 +100,7 @@ const Budgets: FC = () => {
         })
     };
 
+    // Delete budget delete function
     const handleDelete = (id: string) => {
         setLoading(true)
         setBudgetDeleted(true)
@@ -114,6 +121,7 @@ const Budgets: FC = () => {
         })
     }
 
+    // Table columns definitions
     const columns: TableProps<Budget>['columns'] = [
         {
             title: 'Amount',
@@ -162,14 +170,20 @@ const Budgets: FC = () => {
     return (
         <div className="max-w-3xl 2xl:max-w-5xl mx-auto my-auto">
             <div className="flex justify-around items-center mb-10">
+                {/* Path History */}
                 <BreadCrumbs data={[
                     { title: 'DASHBOARD', href: '/wallet/budgets' },
                     { title: 'BUDGETS' }]} />
+                {/*Set Budget Modal*/}
                 <SetBudgetModal setBudgetAdded={setBudgetAdded} />
             </div>
+
+            {/*Show buget info using slider*/}
             <div className='bg-white p-2 shadow-2xl border border-gray-200 mb-4'>
                 <BudgetSlider currentBudget={currentBudget} />
             </div>
+
+            {/*Budgets Table*/}
             <DataTable<Budget>
                 columns={columns}
                 data={budgets}
