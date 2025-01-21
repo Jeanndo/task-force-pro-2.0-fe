@@ -13,11 +13,11 @@ import { useAppDispatch, useMessage } from '@/lib/hooks'
 import { getTotalIncomeTotalExpenses, getTransactionsSummary } from '@/redux/features/transactionSlice'
 import { TotalIncomeAndExpenses, TransactionSummary } from '@/lib/Interfaces'
 
-
+//Dashboard page
 const WalletDashboard: FC = () => {
 
-    const dispatch = useAppDispatch()
-    const messenger = useMessage()
+    const dispatch = useAppDispatch() // dispatcher
+    const messenger = useMessage() //message toaster
     const [loading, setLoading] = useState<boolean>(false)
     const [transactionsSummary, setTransactionsSummary] = useState<TransactionSummary[]>([])
     const [totalInAndOut,setTotalInAndOut] = useState<TotalIncomeAndExpenses>({
@@ -25,6 +25,7 @@ const WalletDashboard: FC = () => {
         Expense:0
     })
 
+    // transaction summary
     useEffect(() => {
         setLoading(true)
         dispatch(getTransactionsSummary()).then((response) => {
@@ -45,6 +46,7 @@ const WalletDashboard: FC = () => {
 
         })
 
+        // Total expenses Amount and Total Income Amount
         dispatch(getTotalIncomeTotalExpenses()).then((response)=>{
             if (response) {
                 //@ts-ignore
@@ -69,13 +71,15 @@ const WalletDashboard: FC = () => {
         <div className="max-w-5xl 2xl:max-w-7xl mx-auto my-auto">
             <Row gutter={[16, 8]}>
                 <Col className="gutter-row" xs={24} sm={12}>
-                    <AnalyticsCard
+                    {/*Global balance Card*/}
+                    <AnalyticsCard 
                         title={"Global Balance"}
                         icon={<DollarCircleOutlined />}
                         loading={loading}
                     />
                 </Col>
                 <Col className="gutter-row" xs={24} sm={12}>
+                {/*Current Budegt Card*/}
                     <BudgetCard
                         title={"Current Budegt"}
                         loading={loading}
@@ -87,15 +91,18 @@ const WalletDashboard: FC = () => {
             <div className="w-full mt-5">
                 <Row gutter={[16, 8]}>
                     <Col className="gutter-row" xs={24} sm={24} md={24} lg={16}>
+                        {/*Transactions Summary*/}
                         <BalanceSummaryChart transactionsSummary={transactionsSummary} />
                     </Col>
                     <Col className="gutter-row" xs={24} sm={24} md={24} lg={8}>
+                        {/*Income and Expense summary*/}
                         <PieChartForIncomeAndExpense totalInAndOut={totalInAndOut} />
                     </Col>
                 </Row>
 
             </div>
             <div className="w-full mt-5">
+                {/*Current Transactions*/}
                 <CurrentTransactions />
             </div>
         </div>

@@ -12,6 +12,8 @@ import WalletSideBar from "@/components/layout/SideBar";
 
 const { Content, Footer } = Layout;
 
+// Layout structure using ant-design
+
 const WalletLayout: FC<Children> = ({ children }) => {
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -20,9 +22,14 @@ const WalletLayout: FC<Children> = ({ children }) => {
         <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
             <WalletProviders>
                 <Layout className="w-full">
+                    {/* Header*/}
                     <LayoutHeader />
+                    {/*End of Header*/}
                     <Layout>
+                        {/*Side bar*/}
                         <WalletSideBar />
+                        {/*End of side bar*/}
+                        {/*Main content*/}
                         <Content
                             className="h-screen overflow-hidden overflow-y-scroll my-24 mx-0 sm:mx-24  p-4"
                             style={{
@@ -32,10 +39,13 @@ const WalletLayout: FC<Children> = ({ children }) => {
                         >
                             {children}
                         </Content>
+                        {/*End of main content*/}
                     </Layout>
+                    {/*Footer*/}
                     <Footer className="text-center uppercase !text-blue-500 !font-bold">
-                        Powered By Jeanndo
+                        Powered By Jean De Dieu
                     </Footer>
+                    {/*Footer*/}
                 </Layout>
             </WalletProviders>
         </StyleProvider>
