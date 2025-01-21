@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
-import { TransactionState, ErrorResponse, IdType, TransactionResponse, TransactionPayload, TransactionsResponse, TransactionParams, UpdateTransactionPayload, TransactionSummaryResponse, TotalIncomeAndExpensesResponse } from "@/lib/Interfaces";
+import { TransactionState, ErrorResponse, IdType, TransactionResponse, TransactionPayload, TransactionsResponse, TransactionParams, UpdateTransactionPayload, TransactionSummaryResponse, TotalIncomeAndExpensesResponse, ReportParams } from "@/lib/Interfaces";
 import { genericErrorResponse } from "@/lib/constants";
 import instance from "@/lib/utils";
 
@@ -299,10 +299,10 @@ export const getTotalIncomeTotalExpenses = createAsyncThunk<TotalIncomeAndExpens
     }
 )
 
-export const getTransactionReport = createAsyncThunk<TransactionResponse, void, { rejectValue: ErrorResponse }>(
+export const getTransactionReport = createAsyncThunk<TransactionResponse, ReportParams, { rejectValue: ErrorResponse }>(
     'transaction/generate-report',
     //@ts-ignore
-    async (_, thunkAPI) => {
+    async (payload, thunkAPI) => {
 
         try {
 
@@ -312,6 +312,10 @@ export const getTransactionReport = createAsyncThunk<TransactionResponse, void, 
                     'Content-Disposition': `attachment; filename=sales.xlsx`,
                     'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 },
+                params: {
+                    fromDate:payload.fromDate,
+                    toDate:payload.toDate              
+                }
             }
 
             //@ts-ignore
