@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 'use client'
 import React, { FC, useEffect, useState } from 'react'
-import { Button, Tag, type TablePaginationConfig, type TableProps } from 'antd';
+import {Tag, type TablePaginationConfig, type TableProps } from 'antd';
 import DataTable from '@/components/table/DataTable';
 import { Card } from '@tremor/react';
 import { useAppDispatch, useMessage } from '@/lib/hooks';
 import { Transaction } from '@/lib/Interfaces';
 import moment from 'moment';
-import { getTransactionReport, getTransactions } from '@/redux/features/transactionSlice';
-import { FileExcelOutlined } from '@ant-design/icons';
+import { getTransactions } from '@/redux/features/transactionSlice';
+import GenerateReportModal from '../modals/GenerateReportModal';
 
 const expandedRowRender = (record: Transaction) => (
     <div className="bg-gray-200 flex justify-start text-sm p-2">
@@ -88,19 +88,6 @@ const CurrentTransactions: FC = () => {
         })
     };
 
-    const getReport = () => {
-        dispatch(getTransactionReport()).then((response) => {
-            if (response) {
-                //@ts-ignore
-                if (response.payload.type) {
-                    messenger.success("Check your downloaded report in your downloads folder")
-                } else {
-                    messenger.warning("Error downloading report")
-                }
-            }
-        })
-    }
-
     const columns: TableProps<Transaction>['columns'] = [
         {
             title: 'Amount',
@@ -142,7 +129,7 @@ const CurrentTransactions: FC = () => {
 
     return (
         <Card className="p-2 !bg-white border-none">
-            <Button type="primary" className="!bg-green-500" icon={<FileExcelOutlined />} onClick={getReport}>Export</Button>
+            <GenerateReportModal/>
             <DataTable<Transaction>
                 columns={columns}
                 data={transactions}

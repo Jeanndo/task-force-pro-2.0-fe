@@ -315,3 +315,8 @@ export type BudgetParams = {
     page?: number;
     limit?: number
 }
+
+export type ReportParams = {
+    fromDate:string;
+    toDate:string;
+}
