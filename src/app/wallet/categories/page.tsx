@@ -14,11 +14,11 @@ import moment from 'moment';
 
 const Categories: FC = () => {
 
-    const dispatch = useAppDispatch()
-    const messenger = useMessage()
+    const dispatch = useAppDispatch() //Action Dispatcher
+    const messenger = useMessage() // Message Toaster
 
     const [loading, setLoading] = useState(false);
-    const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0, });
+    const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0, }); // Pagination
 
     const [categories, setCategories] = useState<Category[]>([])
     const [categoryAdded, setCategoryAdded] = useState<boolean>(false);
@@ -27,6 +27,7 @@ const Categories: FC = () => {
 
 
     useEffect(() => {
+        // Get categories
         dispatch(getCategories({
             page: pagination.current,
             limit: pagination.pageSize
@@ -39,6 +40,7 @@ const Categories: FC = () => {
                     setCategories(availableCategories)
                     setLoading(false)
 
+                    //Update Paginations
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -55,8 +57,11 @@ const Categories: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [categoryAdded, categoryDeleted, categoryUpdated])
 
+    // Get categories on pagination change
     const handleTableChange = (pagination: TablePaginationConfig) => {
         setLoading(true)
+
+        //get categories
         dispatch(getCategories({
             page: pagination.current,
             limit: pagination.pageSize
@@ -70,7 +75,7 @@ const Categories: FC = () => {
                     setCategories(availableCategories)
                     setLoading(false)
 
-
+                    //update paginations
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -90,6 +95,7 @@ const Categories: FC = () => {
         })
     };
 
+    //delete categories function
     const handleDelete = (id: string) => {
         setLoading(true)
         setCategoryDeleted(true)
@@ -110,6 +116,7 @@ const Categories: FC = () => {
         })
     }
 
+    // Table columns definitions
     const columns: TableProps<Category>['columns'] = [
         {
             title: 'Name',
@@ -146,11 +153,15 @@ const Categories: FC = () => {
     return (
         <div className="max-w-3xl 2xl:max-w-5xl mx-auto my-auto">
             <div className="flex justify-around items-center mb-10">
+                {/* Path history*/}
                 <BreadCrumbs data={[
                     { title: 'DASHBOARD', href: '/wallet' },
                     { title: 'CATEGORIES' }]} />
+                {/* Add Category Modal*/}
                 <AddCategoryModal setCategoryAdded={setCategoryAdded} />
             </div>
+
+            {/*Categories Table*/}
             <DataTable<Category>
                 columns={columns}
                 data={categories}

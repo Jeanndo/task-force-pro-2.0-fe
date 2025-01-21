@@ -11,13 +11,16 @@ import { formatMoney } from '@/lib/utils';
 import UpdateAccountModal from '../modals/UpdateAccountModal';
 import DeleteModal from '../modals/DeleteModal';
 
+/**
+ *  Constants
+ */
 type ComponentProps = {
     accountAdded: boolean
 }
 const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
 
-    const dispatch = useAppDispatch()
-    const messenger = useMessage()
+    const dispatch = useAppDispatch() // Acction dispatcher
+    const messenger = useMessage() // Message Hook
 
     const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 2, total: 0, });
     const [loading, setLoading] = useState<boolean>(false)
@@ -28,6 +31,7 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
 
     useEffect(() => {
         setLoading(true);
+        //Get accounts
         dispatch(getAccounts({
             page: pagination.current,
             limit: pagination.pageSize
@@ -40,6 +44,7 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
                     setAccounts(availableAccounts)
                     setLoading(false)
 
+                    //Pagination
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -56,9 +61,11 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accountAdded, accountUpdated, accountDeleted])
 
-
+    // on pagination change
     const handleTableChange = (pagination: TablePaginationConfig) => {
         setLoading(true)
+
+        // get accounts
         dispatch(getAccounts({
             page: pagination.current,
             limit: pagination.pageSize
@@ -72,6 +79,7 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
                     setAccounts(availabbleAccounts)
                     setLoading(false)
 
+                    //Update Pagination
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -91,6 +99,7 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
         })
     };
 
+    //delete account function
     const handleDelete = (id: string) => {
         setLoading(true)
         setAccountDeleted(true)
@@ -111,6 +120,7 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
         })
     }
 
+    // Table column definitons
     const columns: TableProps<Account>['columns'] = [
         {
             title: 'Name',
@@ -159,6 +169,7 @@ const AccountsList: FC<ComponentProps> = ({ accountAdded }) => {
         },
     ];
 
+    // Calculate total balance of all accounts
     const totalBalance = accounts.reduce((sum, item) => sum + item.balance, 0)
 
     return (

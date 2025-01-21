@@ -13,6 +13,7 @@ import DeleteModal from '@/components/modals/DeleteModal';
 import moment from 'moment';
 import GenerateReportModal from '@/components/modals/GenerateReportModal';
 
+//Expandale Transaction Row
 const expandedRowRender = (record: Transaction) => (
     <div className="bg-gray-200 flex justify-start text-sm p-2">
         <div><p className="text-center">{record.description}</p></div>
@@ -21,11 +22,11 @@ const expandedRowRender = (record: Transaction) => (
 
 const Transactions: FC = () => {
 
-    const dispatch = useAppDispatch()
-    const messenger = useMessage()
+    const dispatch = useAppDispatch() // Dispatcher
+    const messenger = useMessage() // Message Toaster
 
     const [loading, setLoading] = useState(false);
-    const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0, });
+    const [pagination, setPagination] = useState<TablePaginationConfig>({ current: 1, pageSize: 10, total: 0, }); // Pagination
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const [transactionAdded, setTransactionAdded] = useState<boolean>(false);
     const [transactionDeleted, setTransactionDeleted] = useState<boolean>(false);
@@ -33,6 +34,7 @@ const Transactions: FC = () => {
 
 
     useEffect(() => {
+        //Get transactions
         dispatch(getTransactions({
             page: pagination.current,
             limit: pagination.pageSize
@@ -45,6 +47,7 @@ const Transactions: FC = () => {
                     setTransactions(availableTransactions)
                     setLoading(false)
 
+                    // update Pagination
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -61,6 +64,7 @@ const Transactions: FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transactionAdded, transactionDeleted, transactionUpdated])
 
+    // Get transactions on pagination change
     const handleTableChange = (pagination: TablePaginationConfig) => {
         setLoading(true)
         dispatch(getTransactions({
@@ -76,6 +80,7 @@ const Transactions: FC = () => {
                     setTransactions(availableTransactions)
                     setLoading(false)
 
+                    // update Pagination
                     setPagination({
                         ...pagination,
                         //@ts-ignore
@@ -95,6 +100,7 @@ const Transactions: FC = () => {
         })
     };
 
+    // delete transactions function
     const handleDelete = (id: string) => {
         setLoading(true)
         setTransactionDeleted(true)
@@ -115,6 +121,7 @@ const Transactions: FC = () => {
         })
     }
 
+    // Table columns definition
     const columns: TableProps<Transaction>['columns'] = [
         {
             title: 'Amount',
@@ -179,12 +186,16 @@ const Transactions: FC = () => {
     return (
         <div className="max-w-3xl 2xl:max-w-5xl mx-auto my-auto">
             <div className="flex justify-around items-center mb-10">
+                {/*Path History*/}
                 <BreadCrumbs data={[
                     { title: 'DASHBOARD', href: '/wallet' },
                     { title: 'TRANSACTIONS' }]} />
+                {/*Add Transaction Modal */}
                 <AddTransactionModal setTransactionAdded={setTransactionAdded} />
+                {/*Generate Report Modal*/}
                 <GenerateReportModal />
             </div>
+            {/*Transactions table*/}
             <DataTable<Transaction>
                 columns={columns}
                 data={transactions}
